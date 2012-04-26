@@ -1,0 +1,15 @@
+<div class="topbar">
+  <div class="fill">
+    <div class="container">
+      <%= link_to "Twitter App",root_url,:class => "brand" %>
+      <ul class="nav">
+        <% if current_user %>
+          <li><%= link_to "Signout",logout_path%></li>
+        <% else %>
+          <li><%= link_to 'Sign In', {:controller=> "user_sessions", :action=> "new"},:class => "signin" %></li>
+          <li><%= link_to 'Sign Up',new_user_path %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= yield :head %>
+    <%= stylesheet_link_tag "bootstrap" %>
+    <%= stylesheet_link_tag "style" %>
+  </head>
+
+  <body>
+      <%= render 'layouts/header' %>
+    <div class="container">
+    <div class="content">
+    <div class="page-header">
+      <h1><%= yield :pagename %></h1>
+    </div>
+    <div class="row">
+      <div class="span10">
+        <%= yield %>
+      </div>
+      <div class="span4">
+      </div>
+    </div>
+    </div>
+
+    <footer>
+    <p>&copy; Company 2011</p>
+    </footer>
+    </body>
+</html>

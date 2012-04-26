@@ -1,0 +1,11 @@
+<% flash.each do |key, msg| %>
+  <ul class="alert-message block-message error">
+  <%= content_tag :div, msg, :id => key %>
+  </ul>
+<% end %>
+<% content_for :head do %>
+  <title>Twitter App</title>
+<% end %>
+<% content_for :pagename do %>
+  Twitter App
+<% end %>
