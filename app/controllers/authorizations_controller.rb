@@ -10,12 +10,13 @@ class AuthorizationsController < ApplicationController
     elsif @auth
       flash[:notice] = "Welcome back #{omniauth['provider']} user"
       #create session
+      @auth.update_attributes(:token => omniauth['credentials']['token'] ,:secret =>omniauth['credentials']['secret'])
       UserSession.create(@auth.user, true) # if you are using authlogic, this will create the session
-      consumer = OAuth::Consumer.new("mshsD0jpgcYwwOEcTW5ZTA", "V6KTqllY5jS392pj4FNFCb5EiOM8DaFzVwr9cS54XQ", { :site => "https://api.twitter.com", :request_token_path => '/oauth/request_token', :access_token_path => '/oauth/access_token', :authorize_path => '/oauth/authorize', :scheme => :header })
-      access_token = OAuth::AccessToken.new(consumer,omniauth['credentials']['token'],omniauth['credentials']['secret'])
-      msg = {'status' => 'Hey look I can tweet via OAuth!'}
-      response = access_token.post('https://api.twitter.com/1/statuses/update.json', msg, { 'Accept' => 'application/xml' })
-      puts response
+      #consumer = OAuth::Consumer.new("mshsD0jpgcYwwOEcTW5ZTA", "V6KTqllY5jS392pj4FNFCb5EiOM8DaFzVwr9cS54XQ", { :site => "https://api.twitter.com", :request_token_path => '/oauth/request_token', :access_token_path => '/oauth/access_token', :authorize_path => '/oauth/authorize', :scheme => :header })
+      #access_token = OAuth::AccessToken.new(consumer,omniauth['credentials']['token'],omniauth['credentials']['secret'])
+      #msg = {'status' => 'Hey look I can tweet via OAuth!'}
+      #response = access_token.post('https://api.twitter.com/1/statuses/update.json', msg, { 'Accept' => 'application/xml' })
+      #puts response
       #User is present. Login the user with his social account
     else
       @new_auth = Authorization.create_from_hash(omniauth, current_user) #Create a new user

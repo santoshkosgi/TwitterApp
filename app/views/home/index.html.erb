@@ -1,7 +1,7 @@
 <% flash.each do |key, msg| %>
-  <ul class="alert-message block-message error">
+  <div class="alert-message success">
   <%= content_tag :div, msg, :id => key %>
-  </ul>
+  </div>
 <% end %>
 <% content_for :head do %>
   <title>Twitter App</title>
@@ -9,3 +9,29 @@
 <% content_for :pagename do %>
   Twitter App
 <% end %>
+<% if current_user %>
+  <%= form_tag "/users/tweet", :method => 'post',:id=>"form_tweet" do %>
+    <%= text_area_tag(:message) %>
+    <input type=submit id="codecheck" value="tweet" class="btn primary">
+    <div id="status" style= "float:right;padding:0px 275px 0px 0px"></div>
+  <% end %>
+
+<%end%>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#form_tweet").submit(function(e){
+        $("#status").html("<img src='/assets/ajax-loader.gif'/>")
+        e.preventDefault()
+          $.ajax({
+            url: $('#form_tweet').attr('action'),
+            complete: function() {
+              $("#status").html("")
+              alert("Tweet successfully posted")
+            },
+            dataType: "script",
+            type: "post",
+            data: $('#form_tweet').serialize()
+          })
+      })
+  })
+</script>

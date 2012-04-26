@@ -10,6 +10,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def tweet
+    @message = params[:message]
+    puts @message.class
+    if current_user.authorizations.empty?
+    else
+      auth = Authorization.find_by_user_id(current_user.id)
+      consumer = OAuth::Consumer.new("mshsD0jpgcYwwOEcTW5ZTA", "V6KTqllY5jS392pj4FNFCb5EiOM8DaFzVwr9cS54XQ", { :site => "https://api.twitter.com", :request_token_path => '/oauth/request_token', :access_token_path => '/oauth/access_token', :authorize_path => '/oauth/authorize', :scheme => :header })
+        access_token = OAuth::AccessToken.new(consumer,auth.token,auth.secret)
+        msg = {'status' => @message}
+        response = access_token.post('https://api.twitter.com/1/statuses/update.json', msg, { 'Accept' => 'application/xml' })
+    end
+  end
   # GET /users/1
   # GET /users/1.json
   def show

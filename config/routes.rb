@@ -1,7 +1,9 @@
 Twitterfeed::Application.routes.draw do
   resources :users
   resources :user_sessions
-
+  resources :users do
+    post 'tweet', :on => :collection
+  end
   get "home/index"
 
   match "logout" => 'user_sessions#destroy'
