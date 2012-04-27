@@ -16,6 +16,22 @@
     <div id="status" style= "float:right;padding:0px 275px 0px 0px"></div>
   <% end %>
 
+  <%if current_user.authorizations.empty? %>
+
+  <%else%>
+
+    <%auth = Authorization.find_by_user_id(current_user.id)%>
+    <%consumer = OAuth::Consumer.new("mshsD0jpgcYwwOEcTW5ZTA", "V6KTqllY5jS392pj4FNFCb5EiOM8DaFzVwr9cS54XQ", { :site => "https://api.twitter.com", :request_token_path => '/oauth/request_token', :access_token_path => '/oauth/access_token', :authorize_path => '/oauth/authorize', :scheme => :header })%>
+    <%access_token = OAuth::AccessToken.new(consumer,auth.token,auth.secret)%>
+    <% msg = {'count' => 10} %>
+    <% response = access_token.get('https://api.twitter.com/1/statuses/home_timeline.json', { 'Accept' => 'application/xml' }).body %>
+    <%tweets = JSON.parse(response)%>
+    <% tweets.each do |tweet| %>
+    <h3><%= tweet["user"]["name"]%></h3>
+    <h3><%= tweet["text"]%>
+    <%end%>
+    <%end%>
+
 <%end%>
 <script type="text/javascript">
   $(document).ready(function () {
