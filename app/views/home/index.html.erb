@@ -10,15 +10,16 @@
   Twitter App
 <% end %>
 <% if current_user %>
-  <%= form_tag "/users/tweet", :method => 'post',:id=>"form_tweet" do %>
-    <%= text_area_tag(:message) %>
-    <input type=submit id="codecheck" value="tweet" class="btn primary">
-    <div id="status" style= "float:right;padding:0px 275px 0px 0px"></div>
-  <% end %>
 
   <%if current_user.authorizations.empty? %>
 
   <%else%>
+
+    <%= form_tag "/users/tweet", :method => 'post',:id=>"form_tweet" do %>
+    <%= text_area_tag(:message) %>
+    <input type=submit id="codecheck" value="tweet" class="btn primary">
+    <div id="status" style= "float:right;padding:0px 275px 0px 0px"></div>
+  <% end %>
 
     <%auth = Authorization.find_by_user_id(current_user.id)%>
     <%consumer = OAuth::Consumer.new("mshsD0jpgcYwwOEcTW5ZTA", "V6KTqllY5jS392pj4FNFCb5EiOM8DaFzVwr9cS54XQ", { :site => "https://api.twitter.com", :request_token_path => '/oauth/request_token', :access_token_path => '/oauth/access_token', :authorize_path => '/oauth/authorize', :scheme => :header })%>
@@ -26,13 +27,19 @@
     <% msg = {'count' => 10} %>
     <% response = access_token.get('https://api.twitter.com/1/statuses/home_timeline.json?count=10',{ 'Accept' => 'application/xml' }).body %>
     <%tweets = JSON.parse(response)%>
+    <% puts tweets %>
     <% tweets.each do |tweet| %>
-    <h3><%= tweet["user"]["name"]%></h3>
-    <h3><%= tweet["text"]%>
+      <% addr = "https://twitter.com/#!/"+tweet["user"]["screen_name"]%>
+      <h3><a href= <%= addr %> ><%= tweet["user"]["screen_name"]%></a></h3>
+      <h3><%= tweet["text"]%></h3>
+      <% if tweet["text"].include?"http"%>
+        <h3>found http</h3>
+        <%= tweet["text"].scan(/\bhttp\b[a-zA-Z\/.:]+/) %>
+      <%end%>
     <%end%>
-    <%end%>
-
+  <%end%>
 <%end%>
+
 <script type="text/javascript">
   $(document).ready(function () {
     $("#form_tweet").submit(function(e){
