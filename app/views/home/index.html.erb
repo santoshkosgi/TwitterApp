@@ -14,7 +14,6 @@
   <%if current_user.authorizations.empty? %>
 
   <%else%>
-
     <%= form_tag "/users/tweet", :method => 'post',:id=>"form_tweet" do %>
     <%= text_area_tag(:message) %>
     <input type=submit id="codecheck" value="tweet" class="btn primary">
@@ -34,7 +33,7 @@
       <h3><%= tweet["text"]%></h3>
       <% if tweet["text"].include?"http"%>
         <h3>found http</h3>
-        <%= tweet["text"].scan(/\bhttp\b[a-zA-Z\/.:]+/) %>
+        <h3><a href= <%= tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0] %> ><%= tweet["text"].scan(/\bhttp\b[a-zA-Z\/.:]+/)[0] %> </a></h3>
       <%end%>
     <%end%>
   <%end%>
