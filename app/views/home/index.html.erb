@@ -26,14 +26,22 @@
     <% msg = {'count' => 10} %>
     <% response = access_token.get('https://api.twitter.com/1/statuses/home_timeline.json?count=10',{ 'Accept' => 'application/xml' }).body %>
     <%tweets = JSON.parse(response)%>
-    <% puts tweets %>
     <% tweets.each do |tweet| %>
       <% addr = "https://twitter.com/#!/"+tweet["user"]["screen_name"]%>
       <h3><a href= <%= addr %> ><%= tweet["user"]["screen_name"]%></a></h3>
       <h3><%= tweet["text"]%></h3>
       <% if tweet["text"].include?"http"%>
         <h3>found http</h3>
-        <h3><a href= <%= tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0] %> ><%= tweet["text"].scan(/\bhttp\b[a-zA-Z\/.:]+/)[0] %> </a></h3>
+        <h3><a href= <%= tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0] %> ><%= tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0] %> </a></h3>
+        <% uri = URI.parse(tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0]) %>
+    <% response = Net::HTTP.get_response(uri) %>
+    <% while response.code != "200"%>
+      <% Rails.logger.debug response.code.inspect%>
+      <% uri = URI.parse(response.header['location']) %>
+      <% response = Net::HTTP.get_response(uri) %>
+    <% end %>
+    <% Rails.logger.debug response.code.inspect%>
+    <% puts response.body%>
       <%end%>
     <%end%>
   <%end%>
