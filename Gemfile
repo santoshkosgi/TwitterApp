@@ -13,6 +13,7 @@ group :development, :test do
   gem 'mysql2', '> 0.3'
 end
 
+gem "hpricot" #parsing html response
 
 # Gems used only for assets and not required
 # in production environments by default.

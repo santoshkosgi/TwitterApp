@@ -35,13 +35,18 @@
         <h3><a href= <%= tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0] %> ><%= tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0] %> </a></h3>
         <% uri = URI.parse(tweet["text"].scan(/\bhttp\b[a-zA-Z0-9\/.:]+/)[0]) %>
     <% response = Net::HTTP.get_response(uri) %>
-    <% while response.code != "200"%>
+    <% while response.code == "301"%>
+      <% url = response.header['location'] %>
+      <% url = URI.encode(url)%>
       <% Rails.logger.debug response.code.inspect%>
-      <% uri = URI.parse(response.header['location']) %>
+      <% uri = URI.parse(url) %>
       <% response = Net::HTTP.get_response(uri) %>
     <% end %>
-    <% Rails.logger.debug response.code.inspect%>
-    <% puts response.body%>
+        <h3>Actual URL is</h3>
+        <h3><a href = <%=url%>><%=url%></h3></a>
+       <% Rails.logger.debug response.code.inspect%>
+       <% doc = Hpricot(response.body) %>
+       <h3><%= doc.search("//title").inner_html %></h3>
       <%end%>
     <%end%>
   <%end%>
